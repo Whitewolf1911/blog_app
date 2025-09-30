@@ -1,5 +1,6 @@
 import 'package:blog_app/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:blog_app/features/auth/domain/repository/auth_repository.dart';
+import 'package:blog_app/features/auth/domain/usecases/get_current_user.dart';
 import 'package:blog_app/features/auth/domain/usecases/user_login.dart';
 import 'package:blog_app/features/auth/domain/usecases/user_sign_up.dart';
 import 'package:blog_app/features/auth/presentation/bloc/auth_bloc.dart';
@@ -38,8 +39,16 @@ void _initAuth() {
     () => UserLogin(authRepository: serviceLocator()),
   );
 
+  serviceLocator.registerFactory(
+    () => GetCurrentUser(authRepository: serviceLocator()),
+  );
+
   // Register blocs as singleton, you don't want different state each time. It needs to persist.
   serviceLocator.registerLazySingleton(
-    () => AuthBloc(userSignUp: serviceLocator(), userLogin: serviceLocator()),
+    () => AuthBloc(
+      userSignUp: serviceLocator(),
+      userLogin: serviceLocator(),
+      getCurrentUser: serviceLocator(),
+    ),
   );
 }
